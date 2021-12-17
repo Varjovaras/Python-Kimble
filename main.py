@@ -2,22 +2,25 @@ from random import randint
 import sys
 
 # amount of starting pieces
-pieces = {1: 4, 2: 1, 3: 4, 4: 4}
+pieces = {1: 4,
+          2: 4,
+          3: 4,
+          4: 4}
 
 # contents of the table
 # 0 means empty
 # first integer of each list is their respective starting square
-table = [[0, 0, 0, 0, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0],
+table = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
 # BYGR
 blueFinish = [0, 0, 0, 0]
 yellowFinish = [0, 0, 0, 0]
-greenFinish = [0, 1, 1, 1]
+greenFinish = [0, 0, 0, 0]
 redFinish = [0, 0, 0, 0]
 
 
 # 1 first player, 4 last player, 0 reserved for empty
-playerTurn = 2
+playerTurn = 1
 
 
 def piecesOnBoard():
@@ -28,54 +31,6 @@ def piecesOnBoard():
                 piecesOnBoard += 1
 
     return piecesOnBoard
-
-
-def checkWin():
-
-    if playerTurn == 1 and blueFinish == [1, 1, 1, 1]:
-        print(table)
-        sys.exit("BLUE WINS!!!11111")
-    elif playerTurn == 2 and yellowFinish == [1, 1, 1, 1]:
-        sys.exit("YELLOW WINS!!!11111")
-    elif playerTurn == 3 and yellowFinish == [1, 1, 1, 1]:
-        sys.exit("GREEN WINS!!!11111")
-    elif playerTurn == 4 and redFinish == [1, 1, 1, 1]:
-        sys.exit("RED WINS!!!11111")
-
-
-def checkFinish(roll):
-    while True:
-        if roll >= 4:
-            break
-        elif playerTurn == 1 and blueFinish[roll] == 0:
-            blueFinish[roll] = 1
-            checkWin()
-            return True
-        elif playerTurn == 2 and yellowFinish[roll] == 0:
-            yellowFinish[roll] = 1
-            checkWin()
-            return True
-
-        elif playerTurn == 3 and greenFinish[roll] == 0:
-            greenFinish[roll] = 1
-            checkWin()
-            return True
-
-        elif playerTurn == 4 and redFinish[roll] == 0:
-            redFinish[roll] = 1
-            checkWin()
-            return True
-
-    print("Didn't finish with this roll")
-    if playerTurn == 1:
-        print("Your finish is currently: ", blueFinish)
-    elif playerTurn == 2:
-        print("Your finish is currently: ", yellowFinish)
-    elif playerTurn == 3:
-        print("Your finish is currently: ", greenFinish)
-    elif playerTurn == 4:
-        print("Your finish is currently: ", redFinish)
-    return False
 
 
 def rollDice():
@@ -174,6 +129,15 @@ def checkLegalMoves(roll):
             severalPieces(roll)
             nextPlayer()
             return "move complete"
+    elif pieceAmount == 0 and roll < 6:
+        print("Didn't roll 6. Can't move anything. Next players turn")
+        nextPlayer()
+        return "next player rolls again"
+
+    elif pieceAmount == 0 and roll == 6:
+        # table[playerTurn-1][0] = playerTurn
+        newPiece()
+        return "move complete"
     else:
         print("What ?")
         return False
@@ -230,6 +194,60 @@ def newPiece():
     table[playerTurn-1][roll] = playerTurn
 
 
+def checkWin():
+
+    if playerTurn == 1 and blueFinish == [1, 1, 1, 1]:
+        print(table)
+        sys.exit("BLUE WINS!!!11111")
+    elif playerTurn == 2 and yellowFinish == [1, 1, 1, 1]:
+        sys.exit("YELLOW WINS!!!11111")
+    elif playerTurn == 3 and greenFinish == [1, 1, 1, 1]:
+        sys.exit("GREEN WINS!!!11111")
+    elif playerTurn == 4 and redFinish == [1, 1, 1, 1]:
+        sys.exit("RED WINS!!!11111")
+
+
+def checkFinish(roll):
+    while True:
+        if roll >= 4:
+            break
+        elif playerTurn == 1 and blueFinish[roll] == 0:
+            blueFinish[roll] = 1
+            checkWin()
+            print("Your finish is currently: ", blueFinish)
+            return True
+        elif playerTurn == 2 and yellowFinish[roll] == 0:
+            yellowFinish[roll] = 1
+            checkWin()
+            print("Your finish is currently: ", yellowFinish)
+            return True
+
+        elif playerTurn == 3 and greenFinish[roll] == 0:
+            greenFinish[roll] = 1
+            checkWin()
+            print("Your finish is currently: ", greenFinish)
+
+            return True
+
+        elif playerTurn == 4 and redFinish[roll] == 0:
+            redFinish[roll] = 1
+            checkWin()
+            print("Your finish is currently: ", redFinish)
+
+            return True
+
+    print("Didn't finish with this roll")
+    if playerTurn == 1:
+        print("Your finish is currently: ", blueFinish)
+    elif playerTurn == 2:
+        print("Your finish is currently: ", yellowFinish)
+    elif playerTurn == 3:
+        print("Your finish is currently: ", greenFinish)
+    elif playerTurn == 4:
+        print("Your finish is currently: ", redFinish)
+    return False
+
+
 def countMove(pieceToMove, roll):
     pieceAmount = piecesOnBoard()
     originalIndex = 0
@@ -249,13 +267,15 @@ def countMove(pieceToMove, roll):
         originalIndex = pieceToMove
         index = originalIndex + roll
 
+    # print(index, originalIndex, index-7)
+
     if playerTurn == 1 and index > 27:
         finish = checkFinish(index-28)
-    elif playerTurn == 2 and originalIndex > 1 and index > 6:
+    elif playerTurn == 2 and originalIndex >= 1 and originalIndex < 7 and index > 6:
         finish = checkFinish(index-7)
-    elif playerTurn == 3 and originalIndex > 8 and index > 13:
+    elif playerTurn == 3 and originalIndex >= 8 and originalIndex < 14 and index > 13:
         finish = checkFinish(index-14)
-    elif playerTurn == 4 and originalIndex > 15 and index < 20:
+    elif playerTurn == 4 and originalIndex >= 15 and originalIndex < 20 and index > 20:
         finish = checkFinish(index-21)
 
     if index > 28:
@@ -277,12 +297,14 @@ def countMove(pieceToMove, roll):
         table[3][originalIndex-21] = 0
 
     if finish == True:
+        print(True)
         # print(table)  # testing
         # print(pieces)  # testing
         return
 
     if index >= 0 and index < 7:
         if table[0][index] != 0:
+            print(table[0][index])
             pieces[table[0][index]] += 1
         table[0][index] = playerTurn
 
@@ -300,8 +322,8 @@ def countMove(pieceToMove, roll):
         if table[3][index-21] != 0:
             pieces[table[3][index-21]] += 1
         table[3][index-21] = playerTurn
-    # print(table)  # testing
-    # print(pieces)  # testing
+    print(table)  # testing
+    print(pieces)  # testing
 
 
 def printPiecesHome(pieces):
@@ -342,10 +364,10 @@ def printBoard():
         move()
 
 
-# printBoard()
+printBoard()
 
 
-# askIfYouWantNewPiece()
-# severalPieces(4)
-countMove(0, 6)
-# move()
+# askIfYouWantNewPiece() #testing
+# severalPieces(4) #testing
+# countMove(0, 6) #testing
+# move() #testing
