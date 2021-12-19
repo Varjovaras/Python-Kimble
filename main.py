@@ -1,5 +1,5 @@
 from random import randint
-import sys
+from sys import exit
 
 # amount of starting pieces
 pieces = {1: 4,
@@ -7,12 +7,12 @@ pieces = {1: 4,
           3: 4,
           4: 4}
 
-# contents of the table
 # 0 means empty
 # first integer of each list is their respective starting square
+# blue yellow green red
 table = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
-# BYGR
+
 blueFinish = [0, 0, 0, 0]
 yellowFinish = [0, 0, 0, 0]
 greenFinish = [0, 0, 0, 0]
@@ -23,14 +23,19 @@ redFinish = [0, 0, 0, 0]
 playerTurn = 1
 
 
-def piecesOnBoard():
-    piecesOnBoard = 0
-    for list in table:
-        for piece in list:
-            if piece == playerTurn:
-                piecesOnBoard += 1
-
-    return piecesOnBoard
+def firstPlayer():
+    global playerTurn
+    input("Roll first player: ")
+    roll = randint(1, 4)
+    print(roll)
+    if roll == 1:
+        print("BLUE PLAYER STARTS")
+    if roll == 2:
+        print("YELLOW PLAYER STARTS")
+    if roll == 3:
+        print("GREEN PLAYER STARTS")
+    if roll == 4:
+        print("RED PLAYER STARTS")
 
 
 def rollDice():
@@ -71,6 +76,16 @@ def nextPlayer():
         playerTurn = 1
     else:
         playerTurn += 1
+
+
+def piecesOnBoard():
+    piecesOnBoard = 0
+    for list in table:
+        for piece in list:
+            if piece == playerTurn:
+                piecesOnBoard += 1
+
+    return piecesOnBoard
 
 
 def move():
@@ -139,7 +154,7 @@ def checkLegalMoves(roll):
         newPiece()
         return "move complete"
     else:
-        print("What ?")
+        print("What ?")  # shouldn't happen
         return False
 
 
@@ -198,13 +213,13 @@ def checkWin():
 
     if playerTurn == 1 and blueFinish == [1, 1, 1, 1]:
         print(table)
-        sys.exit("BLUE WINS!!!11111")
+        exit("BLUE WINS!!!11111")
     elif playerTurn == 2 and yellowFinish == [1, 1, 1, 1]:
-        sys.exit("YELLOW WINS!!!11111")
+        exit("YELLOW WINS!!!11111")
     elif playerTurn == 3 and greenFinish == [1, 1, 1, 1]:
-        sys.exit("GREEN WINS!!!11111")
+        exit("GREEN WINS!!!11111")
     elif playerTurn == 4 and redFinish == [1, 1, 1, 1]:
-        sys.exit("RED WINS!!!11111")
+        exit("RED WINS!!!11111")
 
 
 def checkFinish(roll):
@@ -364,6 +379,7 @@ def printBoard():
         move()
 
 
+firstPlayer()
 printBoard()
 
 
