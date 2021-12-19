@@ -21,7 +21,8 @@ Ohjelma arpoo kuka aloittaa pelin firstPlayer() funktiolla
 
 Ohjelma looppaa kaiken printBoard() funktion kautta
 
-#TODO
+- ###TODO###
+
 Pelaajien vaihtaminen numeroista kirjaimiin B Y G R
 Ohjelman logiikka ei muutu tästä. Tehdessä helpompi määritellä pelaajille vain numerot.
 
